@@ -1,0 +1,15 @@
+# v9: 部屋一覧から「誰もいない部屋」を自動削除
+name = "study-voice-signal-v9"
+main = "src/index.ts"
+compatibility_date = "2025-12-01"
+
+[durable_objects]
+bindings = [
+  { name = "ROOMS", class_name = "RoomDOv9" },
+  { name = "LOBBIES", class_name = "LobbyDOv9" },
+  { name = "INDEX", class_name = "RoomsIndexDOv9" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RoomDOv9", "LobbyDOv9", "RoomsIndexDOv9"]

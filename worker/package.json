@@ -1,0 +1,10 @@
+{
+  "name": "study-voice-worker",
+  "version": "0.4.5",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {}
+}
