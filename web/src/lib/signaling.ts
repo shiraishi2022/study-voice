@@ -36,14 +36,6 @@ export function connectRandom(params: { topic: string; max: number; clientId: st
 }
 // web/src/lib/signaling.ts に追記
 
-export function wsBase(): string {
-  const base = process.env.NEXT_PUBLIC_SIGNAL_URL || "";
-  if (!base) return "";
-  // https://xxx -> wss://xxx
-  // http://xxx  -> ws://xxx
-  return base.replace(/^https:/, "wss:").replace(/^http:/, "ws:");
-}
-
 export function wsRandomUrl(params: {
   topic: string;
   max: number;
