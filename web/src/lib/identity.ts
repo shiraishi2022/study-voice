@@ -9,7 +9,8 @@ const genId = () => {
 };
 export type Identity = {
   name: string;
-  clientId: string;
+  id: string;        // ← 追加
+  clientId: string;  // ← 既にあるなら維持
 };
 
 
