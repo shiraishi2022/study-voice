@@ -1,34 +1,53 @@
-"use client";
-const genId = () => {
-  // modern browsers
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const c: any = globalThis.crypto;
-  if (c && typeof c.randomUUID === "function") return c.randomUUID();
-  // fallback
-  return "id-" + Math.random().toString(16).slice(2) + "-" + Date.now().toString(16);
-};
 export type Identity = {
   name: string;
-  id: string;        // ← 追加
-  clientId: string;  // ← 既にあるなら維持
+  clientId: string;
+  id: string; // alias
 };
 
+const KEY = "study-voice-identity-v1";
 
-function randomName() {
-  const a = ["Study", "Focus", "Math", "Eng", "Sci", "Code", "Zen", "Note", "Geo", "AI"];
-  const b = ["Cat", "Fox", "Owl", "Bear", "Panda", "Wolf", "Koala", "Crow", "Tiger", "Lynx"];
-  return `${a[Math.floor(Math.random()*a.length)]}${b[Math.floor(Math.random()*b.length)]}${Math.floor(Math.random()*900+100)}`;
+function rand(len = 12) {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let s = "";
+  for (let i = 0; i < len; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return s;
+}
+
+function randomName(): string {
+  const animals = ["Lynx", "Fox", "Owl", "Bear", "Wolf", "Panda", "Otter", "Hawk"];
+  const adj = ["Calm", "Bright", "Swift", "Kind", "Cool", "Brave", "Smart", "Gentle"];
+  const a = adj[Math.floor(Math.random() * adj.length)];
+  const b = animals[Math.floor(Math.random() * animals.length)];
+  const n = Math.floor(100 + Math.random() * 900);
+  return `${a}${b}${n}`;
 }
 
 export function loadIdentity(): Identity {
-  const key = "study_identity_v3";
-  const raw = localStorage.getItem(key);
-  if (raw) return JSON.parse(raw) as Identity;
-  const obj = { id: genId(), name: randomName() };
-  localStorage.setItem(key, JSON.stringify(obj));
-  return {
-  name,
-  id: clientId,
-  clientId,
-};
+  if (typeof window === "undefined") {
+    // SSR中は適当な値を返す（画面表示で使う場合はクライアント側で置き換わる）
+    const clientId = rand(16);
+    const name = "server";
+    return { name, clientId, id: clientId };
+  }
+
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<Identity>;
+      const clientId = typeof parsed.clientId === "string" && parsed.clientId ? parsed.clientId : rand(16);
+      const name = typeof parsed.name === "string" && parsed.name ? parsed.name : randomName();
+      const id = typeof (parsed as any).id === "string" && (parsed as any).id ? (parsed as any).id : clientId;
+      const fixed: Identity = { name, clientId, id };
+      localStorage.setItem(KEY, JSON.stringify(fixed));
+      return fixed;
+    }
+  } catch {
+    // fallthrough
+  }
+
+  const clientId = rand(16);
+  const name = randomName();
+  const obj: Identity = { name, clientId, id: clientId };
+  localStorage.setItem(KEY, JSON.stringify(obj));
+  return obj;
 }
