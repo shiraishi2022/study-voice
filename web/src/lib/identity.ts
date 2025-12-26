@@ -7,7 +7,11 @@ const genId = () => {
   // fallback
   return "id-" + Math.random().toString(16).slice(2) + "-" + Date.now().toString(16);
 };
-export type Identity = { id: string; name: string };
+export type Identity = {
+  name: string;
+  clientId: string;
+};
+
 
 function randomName() {
   const a = ["Study", "Focus", "Math", "Eng", "Sci", "Code", "Zen", "Note", "Geo", "AI"];
