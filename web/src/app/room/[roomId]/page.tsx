@@ -22,7 +22,7 @@ export default function RoomPage() {
   const [shareUrl, setShareUrl] = useState<string>("");
   useEffect(() => { if (typeof window !== "undefined") setShareUrl(window.location.href); }, [roomId]);
   const myName = me?.name ?? "…";
-  const myId = (me as any)?.clientId ?? "";
+  const myId = me?.clientId ?? me?.id ?? "";
 
   const [members, setMembers] = useState<Member[]>([]);
   const [inCall, setInCall] = useState(false);
