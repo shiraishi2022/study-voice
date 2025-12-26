@@ -34,3 +34,28 @@ export function connectRandom(params: { topic: string; max: number; clientId: st
   ws.onclose = () => params.onClose?.();
   return ws;
 }
+// web/src/lib/signaling.ts に追記
+
+export function wsBase(): string {
+  const base = process.env.NEXT_PUBLIC_SIGNAL_URL || "";
+  if (!base) return "";
+  // https://xxx -> wss://xxx
+  // http://xxx  -> ws://xxx
+  return base.replace(/^https:/, "wss:").replace(/^http:/, "ws:");
+}
+
+export function wsRandomUrl(params: {
+  topic: string;
+  max: number;
+  clientId: string;
+  name: string;
+}): string {
+  const base = wsBase();
+  const u = new URL(base);
+  u.pathname = "/ws/random";
+  u.searchParams.set("topic", params.topic);
+  u.searchParams.set("max", String(params.max));
+  u.searchParams.set("clientId", params.clientId);
+  u.searchParams.set("name", params.name);
+  return u.toString();
+}
