@@ -26,5 +26,9 @@ export function loadIdentity(): Identity {
   if (raw) return JSON.parse(raw) as Identity;
   const obj = { id: genId(), name: randomName() };
   localStorage.setItem(key, JSON.stringify(obj));
-  return obj;
+  return {
+  name,
+  id: clientId,
+  clientId,
+};
 }
